@@ -1,3 +1,5 @@
+package day1;
+
 import java.io.*;
 import java.net.URL;
 
@@ -17,8 +19,8 @@ public class SimpleIO {
     //- System.in is one
 
     public static void main(String[] args) throws Exception{
-//        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
-//        System.out.println(keyboard.readLine());
+        BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
+        System.out.println(keyboard.readLine());
 
         URL url = new URL("http://www.uol.com.br");
         BufferedReader site = new BufferedReader(new InputStreamReader(url.openStream()));
