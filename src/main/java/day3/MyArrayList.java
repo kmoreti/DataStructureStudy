@@ -1,8 +1,5 @@
 package day3;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by moreti on 1/3/17.
  */
@@ -61,8 +58,6 @@ public class MyArrayList {
         myArrayList.insertItem(10);
 
         System.out.println("Array length: " + myArrayList.a.length);
-
-        List<Integer> x = new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
             System.out.println(myArrayList.a[i]);
