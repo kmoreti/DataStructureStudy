@@ -4,8 +4,8 @@ package day3;
  * Created by moreti on 1/3/17.
  */
 public class SList {
-    private  SListNode head;
-    private  int size;
+    private SListNode head;
+    private int size;
 
     public SList() {
         head = null;
@@ -14,7 +14,7 @@ public class SList {
 
     public void insertFront(Object item) {
         head = new SListNode(item, head);
-        size ++;
+        size++;
     }
 
     public static void main(String[] args) {
@@ -26,12 +26,8 @@ public class SList {
 
         SListNode next = list.head;
         for (int i = 0; i < list.size; i++) {
-            if (next!= null) {
-                System.out.println(next.item);
-                next = next.next;
-            }
+            System.out.println(next.item);
+            next = next.next;
         }
     }
-
-    //55:27
 }
