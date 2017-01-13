@@ -70,7 +70,7 @@ class Date {
         if (year % 4 == 0) {
             return !(year % 100 == 0 && year % 400 != 0);
         }
-        return false;                        // replace this line with your solution
+        return false;
     }
 
     /**
@@ -137,7 +137,7 @@ class Date {
         if (year == d.year && month == d.month && day < d.day) {
             return true;
         }
-        return false;                        // replace this line with your solution
+        return false;
     }
 
     /**
