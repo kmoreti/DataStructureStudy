@@ -13,6 +13,10 @@ class Date {
     private int month;
     private int year;
 
+    private static final int MONTH = 0;
+    private static final int DAY = 1;
+    private static final int YEAR = 2;
+
     /**
      * Constructs a date with the given month, day and year.   If the date is
      * not valid, the entire program will halt with an error message.
@@ -36,21 +40,25 @@ class Date {
      *          a valid date, the program halts with an error message.
      */
     public Date(String s) {
+        this(getDataFromString(s,MONTH),getDataFromString(s,DAY),getDataFromString(s,YEAR));
+    }
+
+    private static int getDataFromString(String s, int position) {
         String[] date = s.split("/");
 
         if ((date[0].length() >= 1 && date[0].length() <= 2) &&
                 (date[1].length() >= 1 && date[1].length() <= 2) &&
                 (date[2].length() >= 1 && date[0].length() <= 4)) {
             if (isValidDate(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]))) {
-                this.day = Integer.parseInt(date[1]);
-                this.month = Integer.parseInt(date[0]);
-                this.year = Integer.parseInt(date[2]);
+                return Integer.parseInt(date[position]);
             } else {
                 System.out.println("Error: It's not a valid date!");
                 System.exit(0);
             }
-//            this(Integer.parseInt(date[0]), Integer.parseInt(date[1]), Integer.parseInt(date[2]));
         }
+        System.out.println("Error: It's not a valid date!");
+        System.exit(0);
+        return 0;
     }
 
     /**
@@ -230,6 +238,11 @@ class Date {
         Date d5 = new Date("8/31/2110");
 
     /* I recommend you write code to test the isLeapYear function! */
+        System.out.println("\nTesting leap year");
+        System.out.println("1800 should be false: " + isLeapYear(1800));
+        System.out.println("1900 should be false: " + isLeapYear(1900));
+        System.out.println("1600 should be true: " + isLeapYear(1600));
+        System.out.println("2000 should be true: " + isLeapYear(2000));
 
         System.out.println("\nTesting before and after.");
         System.out.println(d2 + " after " + d1 + " should be true: " +
