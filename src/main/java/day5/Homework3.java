@@ -64,7 +64,7 @@ public class Homework3 {
         System.out.println("smooshing " + stringInts(test1) + ":");
         smoosh(test1);
         result = stringInts(test1);
-        System.out.println(result);
+        System.out.println("          " + result);
         TestHelper.verify(result.equals(
                 "[  3  7  4  5  2  0  8  5  -1  -1  -1  -1  -1  -1  ]"),
                 "BAD SMOOSH!!!  No cookie.");
@@ -73,7 +73,7 @@ public class Homework3 {
         System.out.println("smooshing " + stringInts(test2) + ":");
         smoosh(test2);
         result = stringInts(test2);
-        System.out.println(result);
+        System.out.println("          " + result);
         TestHelper.verify(result.equals(
                 "[  6  3  6  3  6  3  -1  -1  -1  -1  -1  -1  -1  -1  -1  ]"),
                 "BAD SMOOSH!!!  No cookie.");
@@ -82,7 +82,7 @@ public class Homework3 {
         System.out.println("smooshing " + stringInts(test3) + ":");
         smoosh(test3);
         result = stringInts(test3);
-        System.out.println(result);
+        System.out.println("          " + result);
         TestHelper.verify(result.equals("[  4  -1  -1  -1  -1  ]"),
                 "BAD SMOOSH!!!  No cookie.");
 
@@ -90,7 +90,7 @@ public class Homework3 {
         System.out.println("smooshing " + stringInts(test4) + ":");
         smoosh(test4);
         result = stringInts(test4);
-        System.out.println(result);
+        System.out.println("          " + result);
         TestHelper.verify(result.equals("[  0  1  2  3  4  5  6  ]"),
                 "BAD SMOOSH!!!  No cookie.");
 
@@ -105,7 +105,7 @@ public class Homework3 {
         System.out.println("squishing " + list5.toString() + ":");
         list5.squish();
         result = list5.toString();
-        System.out.println(result);
+        System.out.println("          " + result);
         TestHelper.verify(result.equals("[  3  7  4  5  2  0  8  5  ]"),
                 "BAD SQUISH!!!  No biscuit.");
 
@@ -117,7 +117,7 @@ public class Homework3 {
         System.out.println("squishing " + list6.toString() + ":");
         list6.squish();
         result = list6.toString();
-        System.out.println(result);
+        System.out.println("          " + result);
         TestHelper.verify(result.equals("[  6  3  6  3  6  3  ]"),
                 "BAD SQUISH!!!  No biscuit.");
 
@@ -129,7 +129,7 @@ public class Homework3 {
         System.out.println("squishing " + list7.toString() + ":");
         list7.squish();
         result = list7.toString();
-        System.out.println(result);
+        System.out.println("          " + result);
         TestHelper.verify(result.equals("[  4  ]"),
                 "BAD SQUISH!!!  No biscuit.");
 
@@ -141,7 +141,7 @@ public class Homework3 {
         System.out.println("squishing " + list8.toString() + ":");
         list8.squish();
         result = list8.toString();
-        System.out.println(result);
+        System.out.println("          " + result);
         TestHelper.verify(result.equals("[  0  1  2  3  4  5  6  ]"),
                 "BAD SQUISH!!!  No biscuit.");
 
@@ -149,7 +149,7 @@ public class Homework3 {
         System.out.println("squishing " + list9.toString() + ":");
         list9.squish();
         result = list9.toString();
-        System.out.println(result);
+        System.out.println("          " + result);
         TestHelper.verify(result.equals("[  ]"),
                 "BAD SQUISH!!!  No biscuit.");
 

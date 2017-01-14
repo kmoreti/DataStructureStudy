@@ -1,11 +1,11 @@
 package day5;
 
 /**
- *  The SList class is a singly-linked implementation of the linked list
- *  abstraction.  SLists are mutable data structures, which can grow at either
- *  end.
+ * The SList class is a singly-linked implementation of the linked list
+ * abstraction.  SLists are mutable data structures, which can grow at either
+ * end.
  *
- *  @author Kathy Yelick and Jonathan Shewchuk
+ * @author Kathy Yelick and Jonathan Shewchuk
  **/
 
 public class SList {
@@ -14,7 +14,7 @@ public class SList {
     private int size;
 
     /**
-     *  SList() constructs an empty list.
+     * SList() constructs an empty list.
      **/
 
     public SList() {
@@ -23,8 +23,9 @@ public class SList {
     }
 
     /**
-     *  isEmpty() indicates whether the list is empty.
-     *  @return true if the list is empty, false otherwise.
+     * isEmpty() indicates whether the list is empty.
+     *
+     * @return true if the list is empty, false otherwise.
      **/
 
     public boolean isEmpty() {
@@ -32,8 +33,9 @@ public class SList {
     }
 
     /**
-     *  length() returns the length of this list.
-     *  @return the length of this list.
+     * length() returns the length of this list.
+     *
+     * @return the length of this list.
      **/
 
     public int length() {
@@ -41,8 +43,9 @@ public class SList {
     }
 
     /**
-     *  insertFront() inserts item "obj" at the beginning of this list.
-     *  @param obj the item to be inserted.
+     * insertFront() inserts item "obj" at the beginning of this list.
+     *
+     * @param obj the item to be inserted.
      **/
 
     public void insertFront(Object obj) {
@@ -51,8 +54,9 @@ public class SList {
     }
 
     /**
-     *  insertEnd() inserts item "obj" at the end of this list.
-     *  @param obj the item to be inserted.
+     * insertEnd() inserts item "obj" at the end of this list.
+     *
+     * @param obj the item to be inserted.
      **/
 
     public void insertEnd(Object obj) {
@@ -69,11 +73,12 @@ public class SList {
     }
 
     /**
-     *  nth() returns the item at the specified position.  If position < 1 or
-     *  position > this.length(), null is returned.  Otherwise, the item at
-     *  position "position" is returned.  The list does not change.
-     *  @param position the desired position, from 1 to length(), in the list.
-     *  @return the item at the given position in the list.
+     * nth() returns the item at the specified position.  If position < 1 or
+     * position > this.length(), null is returned.  Otherwise, the item at
+     * position "position" is returned.  The list does not change.
+     *
+     * @param position the desired position, from 1 to length(), in the list.
+     * @return the item at the given position in the list.
      **/
 
     public Object nth(int position) {
@@ -95,43 +100,60 @@ public class SList {
     }
 
     /**
-     *  squish() takes this list and, wherever two or more consecutive items are
-     *  equals(), it removes duplicate nodes so that only one consecutive copy
-     *  remains.  Hence, no two consecutive items in this list are equals() upon
-     *  completion of the procedure.
-     *
-     *  After squish() executes, the list may well be shorter than when squish()
-     *  began.  No extra items are added to make up for those removed.
-     *
-     *  For example, if the input list is [ 0 0 0 0 1 1 0 0 0 3 3 3 1 1 0 ], the
-     *  output list is [ 0 1 0 3 1 0 ].
-     *
-     *  IMPORTANT:  Be sure you use the equals() method, and not the "=="
-     *  operator, to compare items.
+     * squish() takes this list and, wherever two or more consecutive items are
+     * equals(), it removes duplicate nodes so that only one consecutive copy
+     * remains.  Hence, no two consecutive items in this list are equals() upon
+     * completion of the procedure.
+     * <p>
+     * After squish() executes, the list may well be shorter than when squish()
+     * began.  No extra items are added to make up for those removed.
+     * <p>
+     * For example, if the input list is [ 0 0 0 0 1 1 0 0 0 3 3 3 1 1 0 ], the
+     * output list is [ 0 1 0 3 1 0 ].
+     * <p>
+     * IMPORTANT:  Be sure you use the equals() method, and not the "=="
+     * operator, to compare items.
      **/
 
     public void squish() {
         // Fill in your solution here.  (Ours is eleven lines long.)
+        SListNode base = head, pivot = base == null ? null : base.next;
+        for (int x = 1; x < size; x++){
+            if (!base.item.equals(pivot.item)) {
+                base = base.next = pivot;
+                pivot = base.next;
+            } else {
+                pivot = pivot.next;
+                base.next = null;
+            }
+        }
     }
 
     /**
-     *  twin() takes this list and doubles its length by replacing each node
-     *  with two consecutive nodes referencing the same item.
-     *
-     *  For example, if the input list is [ 3 7 4 2 2 ], the
-     *  output list is [ 3 3 7 7 4 4 2 2 2 2 ].
-     *
-     *  IMPORTANT:  Do not try to make new copies of the items themselves.
-     *  Make new SListNodes, but just copy the references to the items.
+     * twin() takes this list and doubles its length by replacing each node
+     * with two consecutive nodes referencing the same item.
+     * <p>
+     * For example, if the input list is [ 3 7 4 2 2 ], the
+     * output list is [ 3 3 7 7 4 4 2 2 2 2 ].
+     * <p>
+     * IMPORTANT:  Do not try to make new copies of the items themselves.
+     * Make new SListNodes, but just copy the references to the items.
      **/
 
     public void twin() {
         // Fill in your solution here.  (Ours is seven lines long.)
+        SListNode base = head, track = head == null ? null : head.next;
+        while (base != null) {
+            base.next = new SListNode(base.item, track);
+            base = track;
+            track = base == null ? null : base.next;
+        }
     }
 
     /**
-     *  toString() converts the list to a String.
-     *  @return a String representation of the list.
+     * toString() converts the list to a String.
+     *
+     * @return a String representation of the list.
      **/
 
     public String toString() {
@@ -152,12 +174,12 @@ public class SList {
 
 
     /**
-     *  main() runs test cases on the SList class.  Prints summary
-     *  information on basic operations and halts with an error (and a stack
-     *  trace) if any of the tests fail.
+     * main() runs test cases on the SList class.  Prints summary
+     * information on basic operations and halts with an error (and a stack
+     * trace) if any of the tests fail.
      **/
 
-    public static void main (String[] args) {
+    public static void main(String[] args) {
         testEmpty();
         testAfterInsertFront();
         testAfterInsertEnd();
@@ -165,9 +187,9 @@ public class SList {
 
 
     /**
-     *  testEmpty() tests toString(), isEmpty(), length(), insertFront(), and
-     *  insertEnd() on an empty list.  Prints summary information of the tests
-     *  and halts the program if errors are detected.
+     * testEmpty() tests toString(), isEmpty(), length(), insertFront(), and
+     * insertEnd() on an empty list.  Prints summary information of the tests
+     * and halts the program if errors are detected.
      **/
 
     private static void testEmpty() {
@@ -201,9 +223,9 @@ public class SList {
     }
 
     /**
-     *  testAfterInsertFront() tests toString(), isEmpty(), length(),
-     *  insertFront(), and insertEnd() after insertFront().  Prints summary
-     *  information of the tests and halts the program if errors are detected.
+     * testAfterInsertFront() tests toString(), isEmpty(), length(),
+     * insertFront(), and insertEnd() after insertFront().  Prints summary
+     * information of the tests and halts the program if errors are detected.
      **/
 
     private static void testAfterInsertFront() {
@@ -232,9 +254,9 @@ public class SList {
     }
 
     /**
-     *  testAfterInsertEnd() tests toString(), isEmpty(), length(),
-     *  insertFront(), and insertEnd() after insertEnd().  Prints summary
-     *  information of the tests and halts the program if errors are detected.
+     * testAfterInsertEnd() tests toString(), isEmpty(), length(),
+     * insertFront(), and insertEnd() after insertEnd().  Prints summary
+     * information of the tests and halts the program if errors are detected.
      **/
 
     private static void testAfterInsertEnd() {
