@@ -10,5 +10,9 @@ public abstract class List {
         return  size;
     }
 
+    public List() {
+        size = 0;
+    }
+
     public abstract void insertFront(Object item);
 }
