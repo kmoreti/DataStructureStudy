@@ -7,3 +7,7 @@
 *.iml
 out
 gen
+src/main/java/project1/data.gz
+src/main/resources/
+src/test/
+target/

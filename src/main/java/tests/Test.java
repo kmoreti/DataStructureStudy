@@ -1,6 +1,6 @@
 package tests;
 
-import java.lang.management.ThreadInfo;
+import day7.List;
 
 /**
  * Created by moreti on 12/28/16.
@@ -26,6 +26,7 @@ public class Test {
         s1 = "Kleber";
         s2 = "Kleber";
         System.out.println(s1 == s2);
+
 
     }
 }
