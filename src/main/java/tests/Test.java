@@ -27,6 +27,5 @@ public class Test {
         s2 = "Kleber";
         System.out.println(s1 == s2);
 
-
     }
 }
