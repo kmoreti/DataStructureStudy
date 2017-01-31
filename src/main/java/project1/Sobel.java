@@ -9,6 +9,9 @@ package project1;
 /* while testing your code.  When you're finished testing and debugging,     */
 /* though, make sure your code works with the original version of this file. */
 
+
+import java.io.File;
+
 /**
  *  The Sobel class is a program that reads an image file in TIFF format,
  *  performs Sobel edge detection and uses it to create a grayscale image
@@ -56,6 +59,7 @@ public class Sobel {
     private static void sobelFile(String filename, int numIterations,
                                   boolean rle) {
         System.out.println("Reading image file " + filename);
+        File fname = new File(filename);
         PixImage image = ImageUtils.readTIFFPix(filename);
         PixImage blurred = image;
 
@@ -63,7 +67,8 @@ public class Sobel {
             System.out.println("Blurring image file.");
             blurred = image.boxBlur(numIterations);
 
-            String blurname = "blur_" + filename;
+            String[] name = fname.getName().split("\\.");
+            String blurname = fname.getParent() + "/" + name[0] + "_blur.tiff";
             System.out.println("Writing blurred image file " + blurname);
             TIFFEncoder.writeTIFF(blurred, blurname);
         }
@@ -71,7 +76,8 @@ public class Sobel {
         System.out.println("Performing Sobel edge detection on image file.");
         PixImage sobeled = blurred.sobelEdges();
 
-        String edgename = "edge_" + filename;
+        String[] name = fname.getName().split("\\.");
+        String edgename = fname.getParent() + "/" + name[0] + "_edge.tiff";
         System.out.println("Writing grayscale-edge image file " + edgename);
         TIFFEncoder.writeTIFF(sobeled, edgename);
         if (rle) {

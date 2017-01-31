@@ -9,6 +9,9 @@ package project1;
 /* while testing your code.  When you're finished testing and debugging,     */
 /* though, make sure your code works with the original version of this file. */
 
+import java.io.File;
+import java.io.FilenameFilter;
+
 /**
  *  The Blur class is a program that reads an image file in TIFF format, blurs
  *  it with a 3x3 box blurring kernel, writes the blurred image as a TIFF file,
@@ -45,7 +48,9 @@ public class Blur {
         System.out.println("Blurring image file.");
         PixImage blurred = image.boxBlur(numIterations);
 
-        String blurname = "blur_" + filename;
+        File fname = new File(filename);
+        String[] name = fname.getName().split("\\.");
+        String blurname = fname.getParent() + "/" + name[0] + "_blur.tiff";
         System.out.println("Writing blurred image file " + blurname);
         TIFFEncoder.writeTIFF(blurred, blurname);
     /*
