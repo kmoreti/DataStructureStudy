@@ -68,7 +68,7 @@ public class Sobel {
             blurred = image.boxBlur(numIterations);
 
             String[] name = fname.getName().split("\\.");
-            String blurname = fname.getParent() + "/" + name[0] + "_blur.tiff";
+            String blurname = fname.getParent() + "/blur_" + name[0] + ".tiff";
             System.out.println("Writing blurred image file " + blurname);
             TIFFEncoder.writeTIFF(blurred, blurname);
         }
@@ -77,7 +77,7 @@ public class Sobel {
         PixImage sobeled = blurred.sobelEdges();
 
         String[] name = fname.getName().split("\\.");
-        String edgename = fname.getParent() + "/" + name[0] + "_edge.tiff";
+        String edgename = fname.getParent() + "/edge_" + name[0] + ".tiff";
         System.out.println("Writing grayscale-edge image file " + edgename);
         TIFFEncoder.writeTIFF(sobeled, edgename);
         if (rle) {

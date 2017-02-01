@@ -50,7 +50,7 @@ public class Blur {
 
         File fname = new File(filename);
         String[] name = fname.getName().split("\\.");
-        String blurname = fname.getParent() + "/" + name[0] + "_blur.tiff";
+        String blurname = fname.getParent() + "/blur_" + name[0] + ".tiff";
         System.out.println("Writing blurred image file " + blurname);
         TIFFEncoder.writeTIFF(blurred, blurname);
     /*

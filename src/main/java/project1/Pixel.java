@@ -10,6 +10,18 @@ class Pixel {
     private short green;
     private short blue;
 
+    public Pixel() {
+        this.red = 0;
+        this.green = 0;
+        this.blue = 0;
+    }
+
+    public Pixel(short red, short green, short blue) {
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
+    }
+
     short getRed() {
         return red;
     }
