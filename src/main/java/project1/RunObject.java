@@ -5,10 +5,15 @@ package project1;
  */
 public class RunObject {
     Pixel pixel;
-    long times;
+    int times;
 
-    public RunObject(Pixel pixel, long times) {
+    public RunObject(Pixel pixel, int times) {
         this.pixel = pixel;
         this.times = times;
     }
+
+//    public RunObject(int [] array) {
+//
+//        pixel = new Pixel(red,green,blue);
+//    }
 }

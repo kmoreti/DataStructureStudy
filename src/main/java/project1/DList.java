@@ -1,5 +1,7 @@
 package project1;
 
+import java.util.Iterator;
+
 /**
  * Created by moreti on 1/31/17.
  */
@@ -45,7 +47,6 @@ public class DList {
             head.prev = head.prev.next;
         } else {
             head.prev = new DListNode(o, head, head);
-            head.next = head.prev;
         }
     }
 
@@ -55,8 +56,39 @@ public class DList {
             head.next = head.next.prev;
         } else {
             head.next = new DListNode(o, head, head);
-            head.prev = head.next;
         }
+    }
 
+    private DListNode getHead(){
+        return head;
+    }
+
+    public void insertAt(int pos, Object o) {
+        DListNode addNode = new DListNode();
+        addNode.item = o;
+        DListNode node = getNode(pos);
+        node.next.prev = addNode;
+        node.prev.next = addNode;
+        addNode.prev = node;
+    }
+
+    public void updateAt(int pos, Object o) {
+        DListNode node = getNode(pos);
+        node.item = o;
+    }
+
+    private DListNode getNode(int pos){
+        DListNode node = head.next;
+        if (node != head) {
+            for (int i = 1; i < pos && node.next != head; i++) {
+                node = node.next;
+            }
+        }
+        return node;
+    }
+
+    protected Object getValue(int pos){
+        DListNode node = getNode(pos);
+        return node.item;
     }
 }

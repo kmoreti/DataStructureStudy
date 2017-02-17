@@ -22,6 +22,10 @@ class Pixel {
         this.blue = blue;
     }
 
+    public Pixel(Pixel pix) {
+        this(pix.getRed(), pix.getGreen(),pix.getBlue());
+    }
+
     short getRed() {
         return red;
     }
@@ -50,5 +54,25 @@ class Pixel {
         setRed(red);
         setGreen(green);
         setBlue(blue);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Pixel pixel = (Pixel) o;
+
+        if (red != pixel.red) return false;
+        if (green != pixel.green) return false;
+        return blue == pixel.blue;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) red;
+        result = 31 * result + (int) green;
+        result = 31 * result + (int) blue;
+        return result;
     }
 }
