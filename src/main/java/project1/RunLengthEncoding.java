@@ -151,20 +151,19 @@ public class RunLengthEncoding extends DList implements Iterable {
         // Replace the following line with your solution.
         PixImage pixImage = new PixImage(width, height);
         RunIterator iterator = iterator();
-        int y = height - 1;
-        int x = width - 1;
+        int y = 0;
+        int x = 0;
         while (iterator.hasNext()) {
             int[] ints = iterator.next();
             for (int times = 0; times < ints[0]; times++) {
                 pixImage.setPixel(x, y, (short) ints[1], (short) ints[2], (short) ints[3]);
-                x--;
-                if (x < 0) {
-                    x = width - 1;
-                    y--;
+                x++;
+                if (x == width) {
+                    x = 0;
+                    y++;
                 }
             }
         }
-//        System.out.println(pixImage.toString());
         return pixImage;
     }
 
@@ -183,15 +182,14 @@ public class RunLengthEncoding extends DList implements Iterable {
         RunIterator iterator = iterator();
         while (iterator.hasNext()) {
             int[] ints = iterator.next();
-            stringBuilder.append("RunLength { times: ");
             stringBuilder.append(ints[0]);
-            stringBuilder.append(", red: ");
+            stringBuilder.append("x[red=");
             stringBuilder.append(ints[1]);
-            stringBuilder.append(", green: ");
+            stringBuilder.append(",green=");
             stringBuilder.append(ints[2]);
-            stringBuilder.append(", blue: ");
+            stringBuilder.append(",blue=");
             stringBuilder.append(ints[3]);
-            stringBuilder.append(" } \n");
+            stringBuilder.append("]\n");
         }
         return stringBuilder.toString();
     }
@@ -235,7 +233,6 @@ public class RunLengthEncoding extends DList implements Iterable {
                 }
             }
         }
-
         check();
     }
 
@@ -271,7 +268,6 @@ public class RunLengthEncoding extends DList implements Iterable {
             System.out.println("Error: the sum of all run lengths is not equal the number of pixels in the image.");
         }
 
-
     }
 
 
@@ -296,40 +292,75 @@ public class RunLengthEncoding extends DList implements Iterable {
         // Your solution here, but you should probably leave the following line
         //   at the end.
         int position = 0;
-        int target = x * y;
+        x += 1;
+        y += 1;
+        int target = x + (y * (width - 1)) + y - width;
         int nodeNumber = 1;
         Pixel pixel = new Pixel(red, green, blue);
         RunObject runObject = null;
-        while (nodeNumber < target) {
+        while (position < target) {
             runObject = (RunObject) getValue(nodeNumber);
             position += runObject.times;
             nodeNumber++;
         }
-        if (!pixel.equals(runObject.pixel)) {
-            int upper = position; // 35
-            int lower = position - runObject.times; // 15
-            int point = target - lower; // 20 - 15 = 5
-            int cut = upper - point; // 35 - 5 = 30
+        int cut = position - runObject.times;
+        nodeNumber--;
+        if (runObject != null) {
+            if (runObject.times <= 1) {
+                runObject.pixel = pixel;
+                updateAt(nodeNumber, runObject);
+            } else {
+                runObject.times--;
+                RunObject object = new RunObject(pixel, 1);
+                if (target == cut + 1) {
+                    insertAt(nodeNumber, object);
+                } else if (target == position) {
+                    if (nodeNumber == getSize()) {
+                        insertFront(object);
+                    } else {
+                        insertAt(nodeNumber + 1, object);
+                    }
+                    nodeNumber++;
+                } else if (target > cut + 1 && target < position) {
+                    if (!runObject.pixel.equals(pixel)) {
+                        int pos = nodeNumber;
+                        int prevValue = target - (position - runObject.times);
+                        int nextValue = runObject.times - prevValue;
+                        if (prevValue > 0) {
+                            RunObject prevObject = new RunObject(runObject.pixel, prevValue);
+                            updateAt(pos, prevObject);
+                            pos++;
+                        }
+                        insertAt(pos, object);
+                        nodeNumber = pos;
+                        if (nextValue > 0) {
+                            pos++;
+                            RunObject nextObject = new RunObject(runObject.pixel, nextValue);
+                            insertAt(pos, nextObject);
+                        }
+                    }
+                }
+                runObject = object;
+            }
 
-            if (cut > 1) {
+            RunObject prev = (RunObject) getValue(nodeNumber - 1);
+            while (nodeNumber - 1 > 0 && prev.pixel.equals(runObject.pixel)) {
+                prev.times += runObject.times;
+                removeAt(nodeNumber);
+                nodeNumber--;
+                runObject = prev;
+                prev = (RunObject) getValue(nodeNumber - 1);
+            }
 
-                runObject.times = cut;
-                RunObject insRunObject = new RunObject(pixel, 1);
-                insertAt(nodeNumber - 1, insRunObject);
-                RunObject splRunObject = new RunObject(new Pixel(runObject.pixel), point - 1);
-
+            RunObject next = (RunObject) getValue(nodeNumber + 1);
+            while (next != null && next.pixel.equals(runObject.pixel)) {
+                runObject.times += next.times;
+                removeAt(nodeNumber + 1);
+                next = (RunObject) getValue(nodeNumber + 1);
             }
         }
 
         check();
-
-        /*
-        20
-
-        5,45 10,46 20,76  => 35 - (35 - 20) = 20
-
-        3,14 67,45 => 70 - (70 - 20) = 20
-         */
     }
 
 
@@ -430,145 +461,202 @@ public class RunLengthEncoding extends DList implements Iterable {
                                                     { 2, 5, 8 } })),
            */
                 "Setting RLE1[0][0] = 42 fails.");
-//
-//        System.out.println("Testing setPixel() on a 3x3 encoding.");
-//        setAndCheckRLE(rle1, 1, 0, 42);
-//        image1.setPixel(1, 0, (short) 42, (short) 42, (short) 42);
-//        doTest(rle1.toPixImage().equals(image1),
-//                "Setting RLE1[1][0] = 42 fails.");
-//
-//        System.out.println("Testing setPixel() on a 3x3 encoding.");
-//        setAndCheckRLE(rle1, 0, 1, 2);
-//        image1.setPixel(0, 1, (short) 2, (short) 2, (short) 2);
-//        doTest(rle1.toPixImage().equals(image1),
-//                "Setting RLE1[0][1] = 2 fails.");
-//
-//        System.out.println("Testing setPixel() on a 3x3 encoding.");
-//        setAndCheckRLE(rle1, 0, 0, 0);
-//        image1.setPixel(0, 0, (short) 0, (short) 0, (short) 0);
-//        doTest(rle1.toPixImage().equals(image1),
-//                "Setting RLE1[0][0] = 0 fails.");
-//
-//        System.out.println("Testing setPixel() on a 3x3 encoding.");
-//        setAndCheckRLE(rle1, 2, 2, 7);
-//        image1.setPixel(2, 2, (short) 7, (short) 7, (short) 7);
-//        doTest(rle1.toPixImage().equals(image1),
-//                "Setting RLE1[2][2] = 7 fails.");
-//
-//        System.out.println("Testing setPixel() on a 3x3 encoding.");
-//        setAndCheckRLE(rle1, 2, 2, 42);
-//        image1.setPixel(2, 2, (short) 42, (short) 42, (short) 42);
-//        doTest(rle1.toPixImage().equals(image1),
-//                "Setting RLE1[2][2] = 42 fails.");
-//
-//        System.out.println("Testing setPixel() on a 3x3 encoding.");
-//        setAndCheckRLE(rle1, 1, 2, 42);
-//        image1.setPixel(1, 2, (short) 42, (short) 42, (short) 42);
-//        doTest(rle1.toPixImage().equals(image1),
-//                "Setting RLE1[1][2] = 42 fails.");
-//
-//
-//        PixImage image2 = array2PixImage(new int[][]{{2, 3, 5},
-//                {2, 4, 5},
-//                {3, 4, 6}});
-//
-//        System.out.println("Testing one-parameter RunLengthEncoding constuctor " +
-//                "on another 3x3 image.  Input image:");
-//        System.out.print(image2);
-//        RunLengthEncoding rle2 = new RunLengthEncoding(image2);
-//        rle2.check();
-//        System.out.println("Testing getWidth/getHeight on a 3x3 encoding.");
-//        doTest(rle2.getWidth() == 3 && rle2.getHeight() == 3,
-//                "RLE2 has wrong dimensions");
-//
-//        System.out.println("Testing toPixImage() on a 3x3 encoding.");
-//        doTest(rle2.toPixImage().equals(image2),
-//                "image2 -> RLE2 -> image does not reconstruct the original image");
-//
-//        System.out.println("Testing setPixel() on a 3x3 encoding.");
-//        setAndCheckRLE(rle2, 0, 1, 2);
-//        image2.setPixel(0, 1, (short) 2, (short) 2, (short) 2);
-//        doTest(rle2.toPixImage().equals(image2),
-//                "Setting RLE2[0][1] = 2 fails.");
-//
-//        System.out.println("Testing setPixel() on a 3x3 encoding.");
-//        setAndCheckRLE(rle2, 2, 0, 2);
-//        image2.setPixel(2, 0, (short) 2, (short) 2, (short) 2);
-//        doTest(rle2.toPixImage().equals(image2),
-//                "Setting RLE2[2][0] = 2 fails.");
-//
-//
-//        PixImage image3 = array2PixImage(new int[][]{{0, 5},
-//                {1, 6},
-//                {2, 7},
-//                {3, 8},
-//                {4, 9}});
-//
-//        System.out.println("Testing one-parameter RunLengthEncoding constuctor " +
-//                "on a 5x2 image.  Input image:");
-//        System.out.print(image3);
-//        RunLengthEncoding rle3 = new RunLengthEncoding(image3);
-//        rle3.check();
-//        System.out.println("Testing getWidth/getHeight on a 5x2 encoding.");
-//        doTest(rle3.getWidth() == 5 && rle3.getHeight() == 2,
-//                "RLE3 has wrong dimensions");
-//
-//        System.out.println("Testing toPixImage() on a 5x2 encoding.");
-//        doTest(rle3.toPixImage().equals(image3),
-//                "image3 -> RLE3 -> image does not reconstruct the original image");
-//
-//        System.out.println("Testing setPixel() on a 5x2 encoding.");
-//        setAndCheckRLE(rle3, 4, 0, 6);
-//        image3.setPixel(4, 0, (short) 6, (short) 6, (short) 6);
-//        doTest(rle3.toPixImage().equals(image3),
-//                "Setting RLE3[4][0] = 6 fails.");
-//
-//        System.out.println("Testing setPixel() on a 5x2 encoding.");
-//        setAndCheckRLE(rle3, 0, 1, 6);
-//        image3.setPixel(0, 1, (short) 6, (short) 6, (short) 6);
-//        doTest(rle3.toPixImage().equals(image3),
-//                "Setting RLE3[0][1] = 6 fails.");
-//
-//        System.out.println("Testing setPixel() on a 5x2 encoding.");
-//        setAndCheckRLE(rle3, 0, 0, 1);
-//        image3.setPixel(0, 0, (short) 1, (short) 1, (short) 1);
-//        doTest(rle3.toPixImage().equals(image3),
-//                "Setting RLE3[0][0] = 1 fails.");
-//
-//
-//        PixImage image4 = array2PixImage(new int[][]{{0, 3},
-//                {1, 4},
-//                {2, 5}});
-//
-//        System.out.println("Testing one-parameter RunLengthEncoding constuctor " +
-//                "on a 3x2 image.  Input image:");
-//        System.out.print(image4);
-//        RunLengthEncoding rle4 = new RunLengthEncoding(image4);
-//        rle4.check();
-//        System.out.println("Testing getWidth/getHeight on a 3x2 encoding.");
-//        doTest(rle4.getWidth() == 3 && rle4.getHeight() == 2,
-//                "RLE4 has wrong dimensions");
-//
-//        System.out.println("Testing toPixImage() on a 3x2 encoding.");
-//        doTest(rle4.toPixImage().equals(image4),
-//                "image4 -> RLE4 -> image does not reconstruct the original image");
-//
-//        System.out.println("Testing setPixel() on a 3x2 encoding.");
-//        setAndCheckRLE(rle4, 2, 0, 0);
-//        image4.setPixel(2, 0, (short) 0, (short) 0, (short) 0);
-//        doTest(rle4.toPixImage().equals(image4),
-//                "Setting RLE4[2][0] = 0 fails.");
-//
-//        System.out.println("Testing setPixel() on a 3x2 encoding.");
-//        setAndCheckRLE(rle4, 1, 0, 0);
-//        image4.setPixel(1, 0, (short) 0, (short) 0, (short) 0);
-//        doTest(rle4.toPixImage().equals(image4),
-//                "Setting RLE4[1][0] = 0 fails.");
-//
-//        System.out.println("Testing setPixel() on a 3x2 encoding.");
-//        setAndCheckRLE(rle4, 1, 0, 1);
-//        image4.setPixel(1, 0, (short) 1, (short) 1, (short) 1);
-//        doTest(rle4.toPixImage().equals(image4),
-//                "Setting RLE4[1][0] = 1 fails.");
+
+
+        System.out.println("Testing setPixel() on a 3x3 encoding.");
+        setAndCheckRLE(rle1, 1, 0, 42);
+        image1.setPixel(1, 0, (short) 42, (short) 42, (short) 42);
+        doTest(rle1.toPixImage().equals(image1),
+                "Setting RLE1[1][0] = 42 fails.");
+
+
+        System.out.println("Testing setPixel() on a 3x3 encoding.");
+        setAndCheckRLE(rle1, 0, 1, 2);
+        image1.setPixel(0, 1, (short) 2, (short) 2, (short) 2);
+        doTest(rle1.toPixImage().equals(image1),
+                "Setting RLE1[0][1] = 2 fails.");
+
+
+        System.out.println("Testing setPixel() on a 3x3 encoding.");
+        setAndCheckRLE(rle1, 0, 0, 0);
+        image1.setPixel(0, 0, (short) 0, (short) 0, (short) 0);
+        doTest(rle1.toPixImage().equals(image1),
+                "Setting RLE1[0][0] = 0 fails.");
+
+
+        System.out.println("Testing setPixel() on a 3x3 encoding.");
+        setAndCheckRLE(rle1, 2, 2, 7);
+        image1.setPixel(2, 2, (short) 7, (short) 7, (short) 7);
+        doTest(rle1.toPixImage().equals(image1),
+                "Setting RLE1[2][2] = 7 fails.");
+
+
+        System.out.println("Testing setPixel() on a 3x3 encoding.");
+        setAndCheckRLE(rle1, 2, 2, 42);
+        image1.setPixel(2, 2, (short) 42, (short) 42, (short) 42);
+        doTest(rle1.toPixImage().equals(image1),
+                "Setting RLE1[2][2] = 42 fails.");
+
+
+        System.out.println("Testing setPixel() on a 3x3 encoding.");
+        setAndCheckRLE(rle1, 1, 2, 42);
+        image1.setPixel(1, 2, (short) 42, (short) 42, (short) 42);
+        doTest(rle1.toPixImage().equals(image1),
+                "Setting RLE1[1][2] = 42 fails.");
+
+//        System.out.flush();
+//        System.out.println("rle1");
+//        System.out.flush();
+//        System.out.println(rle1);
+//        System.out.flush();
+//        System.out.println("rle1 - image");
+//        System.out.println(rle1.toPixImage());
+//        System.out.flush();
+//        System.out.println("image1");
+//        System.out.flush();
+//        System.out.println(image1);
+//        System.out.flush();
+
+        PixImage image2 = array2PixImage(new int[][]{{2, 3, 5},
+                {2, 4, 5},
+                {3, 4, 6}});
+
+        System.out.println("Testing one-parameter RunLengthEncoding constuctor " +
+                "on another 3x3 image.  Input image:");
+        System.out.print(image2);
+        RunLengthEncoding rle2 = new RunLengthEncoding(image2);
+        rle2.check();
+        System.out.println("Testing getWidth/getHeight on a 3x3 encoding.");
+        doTest(rle2.getWidth() == 3 && rle2.getHeight() == 3,
+                "RLE2 has wrong dimensions");
+
+        System.out.println("Testing toPixImage() on a 3x3 encoding.");
+        doTest(rle2.toPixImage().equals(image2),
+                "image2 -> RLE2 -> image does not reconstruct the original image");
+
+        System.out.println("Testing setPixel() on a 3x3 encoding.");
+        setAndCheckRLE(rle2, 0, 1, 2);
+        image2.setPixel(0, 1, (short) 2, (short) 2, (short) 2);
+        doTest(rle2.toPixImage().equals(image2),
+                "Setting RLE2[0][1] = 2 fails.");
+
+        System.out.println("Testing setPixel() on a 3x3 encoding.");
+        setAndCheckRLE(rle2, 2, 0, 2);
+        image2.setPixel(2, 0, (short) 2, (short) 2, (short) 2);
+        doTest(rle2.toPixImage().equals(image2),
+                "Setting RLE2[2][0] = 2 fails.");
+
+
+//        System.out.flush();
+//        System.out.println("rle2");
+//        System.out.flush();
+//        System.out.println(rle2);
+//        System.out.flush();
+//        System.out.println("rle2 - image");
+//        System.out.println(rle2.toPixImage());
+//        System.out.flush();
+//        System.out.println("image2");
+//        System.out.flush();
+//        System.out.println(image2);
+//        System.out.flush();
+
+        PixImage image3 = array2PixImage(new int[][]{{0, 5},
+                {1, 6},
+                {2, 7},
+                {3, 8},
+                {4, 9}});
+
+        System.out.println("Testing one-parameter RunLengthEncoding constuctor " +
+                "on a 5x2 image.  Input image:");
+        System.out.print(image3);
+        RunLengthEncoding rle3 = new RunLengthEncoding(image3);
+        rle3.check();
+        System.out.println("Testing getWidth/getHeight on a 5x2 encoding.");
+        doTest(rle3.getWidth() == 5 && rle3.getHeight() == 2,
+                "RLE3 has wrong dimensions");
+
+        System.out.println("Testing toPixImage() on a 5x2 encoding.");
+        doTest(rle3.toPixImage().equals(image3),
+                "image3 -> RLE3 -> image does not reconstruct the original image");
+
+        System.out.println("Testing setPixel() on a 5x2 encoding.");
+        setAndCheckRLE(rle3, 4, 0, 6);
+        image3.setPixel(4, 0, (short) 6, (short) 6, (short) 6);
+        doTest(rle3.toPixImage().equals(image3),
+                "Setting RLE3[4][0] = 6 fails.");
+
+        System.out.println("Testing setPixel() on a 5x2 encoding.");
+        setAndCheckRLE(rle3, 0, 1, 6);
+        image3.setPixel(0, 1, (short) 6, (short) 6, (short) 6);
+        doTest(rle3.toPixImage().equals(image3),
+                "Setting RLE3[0][1] = 6 fails.");
+
+        System.out.println("Testing setPixel() on a 5x2 encoding.");
+        setAndCheckRLE(rle3, 0, 0, 1);
+        image3.setPixel(0, 0, (short) 1, (short) 1, (short) 1);
+        doTest(rle3.toPixImage().equals(image3),
+                "Setting RLE3[0][0] = 1 fails.");
+
+//        System.out.flush();
+//        System.out.println("rle3");
+//        System.out.flush();
+//        System.out.println(rle3);
+//        System.out.flush();
+//        System.out.println("rle3 - image");
+//        System.out.println(rle3.toPixImage());
+//        System.out.flush();
+//        System.out.println("image3");
+//        System.out.flush();
+//        System.out.println(image3);
+//        System.out.flush();
+
+
+        PixImage image4 = array2PixImage(new int[][]{{0, 3},
+                {1, 4},
+                {2, 5}});
+
+        System.out.println("Testing one-parameter RunLengthEncoding constuctor " +
+                "on a 3x2 image.  Input image:");
+        System.out.print(image4);
+        RunLengthEncoding rle4 = new RunLengthEncoding(image4);
+        rle4.check();
+        System.out.println("Testing getWidth/getHeight on a 3x2 encoding.");
+        doTest(rle4.getWidth() == 3 && rle4.getHeight() == 2,
+                "RLE4 has wrong dimensions");
+
+        System.out.println("Testing toPixImage() on a 3x2 encoding.");
+        doTest(rle4.toPixImage().equals(image4),
+                "image4 -> RLE4 -> image does not reconstruct the original image");
+
+        System.out.println("Testing setPixel() on a 3x2 encoding.");
+        setAndCheckRLE(rle4, 2, 0, 0);
+        image4.setPixel(2, 0, (short) 0, (short) 0, (short) 0);
+        doTest(rle4.toPixImage().equals(image4),
+                "Setting RLE4[2][0] = 0 fails.");
+
+        System.out.println("Testing setPixel() on a 3x2 encoding.");
+        setAndCheckRLE(rle4, 1, 0, 0);
+        image4.setPixel(1, 0, (short) 0, (short) 0, (short) 0);
+        doTest(rle4.toPixImage().equals(image4),
+                "Setting RLE4[1][0] = 0 fails.");
+
+        System.out.println("Testing setPixel() on a 3x2 encoding.");
+        setAndCheckRLE(rle4, 1, 0, 1);
+        image4.setPixel(1, 0, (short) 1, (short) 1, (short) 1);
+        doTest(rle4.toPixImage().equals(image4),
+                "Setting RLE4[1][0] = 1 fails.");
+
+//        System.out.flush();
+//        System.out.println("rle4");
+//        System.out.flush();
+//        System.out.println(rle4);
+//        System.out.flush();
+//        System.out.println("rle4 - image");
+//        System.out.println(rle4.toPixImage());
+//        System.out.flush();
+//        System.out.println("image4");
+//        System.out.flush();
+//        System.out.println(image4);
+//        System.out.flush();
     }
 }

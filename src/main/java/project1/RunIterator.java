@@ -58,7 +58,7 @@ public class RunIterator implements Iterator {
     RunIterator(DListNode node) {
         // Your solution here.  You may add parameters to the method signature.
         this.head = node;
-        this.node = head.next;
+        this.node = head.prev;
     }
 
     /**
@@ -97,6 +97,8 @@ public class RunIterator implements Iterator {
         // Construct a new array of 4 ints, fill in its values, and return it.
         // Don't forget to advance the RunIterator's pointer so that the next
         // call to next() will return the subsequent run.
+
+        // Replace the following line with your solution.
         RunObject runObject = (RunObject) node.item;
         Pixel pixel = runObject.pixel;
         int array[] = new int[4];
@@ -104,8 +106,7 @@ public class RunIterator implements Iterator {
         array[1] = pixel.getRed();
         array[2] = pixel.getGreen();
         array[3] = pixel.getBlue();
-        node = node.next;
-        // Replace the following line with your solution.
+        node = node.prev;
         return array;
     }
 

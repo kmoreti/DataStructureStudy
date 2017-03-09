@@ -41,25 +41,18 @@ public class DList {
         }
     }
 
-    public void insertBack(Object o) {
-        if (head.prev != head) {
-            head.prev.next = new DListNode(o, head, head.prev);
-            head.prev = head.prev.next;
-        } else {
-            head.prev = new DListNode(o, head, head);
-        }
-    }
-
     public void insertFront(Object o) {
         if (head.next != head) {
             head.next.prev = new DListNode(o, head.next, head);
             head.next = head.next.prev;
         } else {
             head.next = new DListNode(o, head, head);
+            head.prev = head.next;
         }
+        size++;
     }
 
-    private DListNode getHead(){
+    protected DListNode getHead(){
         return head;
     }
 
@@ -67,9 +60,20 @@ public class DList {
         DListNode addNode = new DListNode();
         addNode.item = o;
         DListNode node = getNode(pos);
-        node.next.prev = addNode;
-        node.prev.next = addNode;
         addNode.prev = node;
+        addNode.next = node.next;
+        node.next.prev = addNode;
+        node.next = addNode;
+        size++;
+    }
+
+    public void removeAt(int pos) {
+        if (pos > 0) {
+            DListNode node = getNode(pos);
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+            size--;
+        }
     }
 
     public void updateAt(int pos, Object o) {
@@ -78,17 +82,24 @@ public class DList {
     }
 
     private DListNode getNode(int pos){
-        DListNode node = head.next;
+        DListNode node = head.prev;
         if (node != head) {
-            for (int i = 1; i < pos && node.next != head; i++) {
-                node = node.next;
+            for (int i = 1; i < pos; i++) {
+                node = node.prev;
+                if (node == head) {
+                    return null;
+                }
             }
         }
         return node;
     }
 
+    public int getSize() {
+        return size;
+    }
+
     protected Object getValue(int pos){
         DListNode node = getNode(pos);
-        return node.item;
+        return node != null ? node.item : null;
     }
 }

@@ -21,6 +21,7 @@ public class Test {
 
     // This should be true when we generate
     private static final boolean WRITE_MODE = false;
+    private static final String PATH = "/Users/kmoreti/Documents/DataStructureStudyProject/src/main/resources/project1/";
 
     // The maximum number of rows/columns/lines we should print.
     // Change this to Integer.MAX_VALUE to print everything.
@@ -35,7 +36,7 @@ public class Test {
     private static ObjectOutputStream os;
 
     private static void init() throws FileNotFoundException, IOException {
-        File file = new File("data.gz");
+        File file = new File(PATH + "data.gz");
         if (WRITE_MODE) {
             if (file.exists())  // Let's make it hard to overwrite the data.
                 throw new RuntimeException("Please delete " + file.getAbsolutePath());
@@ -442,7 +443,7 @@ public class Test {
 
         try {
             System.out.println("  Reading feathers.tiff.");
-            studentImage = ImageUtils.readTIFFPix("feathers.tiff");
+            studentImage = ImageUtils.readTIFFPix(PATH + "feathers.tiff");
         } catch (IllegalArgumentException e) {
             System.out.println("Cannot read feathers.tiff.  Exiting.");
             System.exit(1);
@@ -516,6 +517,7 @@ public class Test {
         int[] rb = {42, 42, 42, 137, 137, 137};
         int[] rl = {3, 2, 5, 1, 1, 4};
         RunLengthEncoding rle1 = new RunLengthEncoding(4, 4, rr, rg, rb, rl);
+        System.out.println(rle1.toString());
         ArrayList<int[]> jrle1 = readOrWriteNextRLE(rle1);
 
         System.out.println("  Reading back the encoding through nextRun.");
@@ -581,7 +583,7 @@ public class Test {
 
         try {
             System.out.println("  Reading highcontrast.tiff.");
-            studentImage = ImageUtils.readTIFFPix("highcontrast.tiff");
+            studentImage = ImageUtils.readTIFFPix(PATH + "highcontrast.tiff");
         } catch (IllegalArgumentException e) {
             System.out.println("Cannot read highcontrast.tiff.  Exiting.");
             System.exit(1);
